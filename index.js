@@ -56,6 +56,10 @@ connectDB();
 const registerRoutes = require('./routes/registerRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const eventRoutes = require('./routes/eventRoutes');
+const memberAuthRoutes = require('./routes/memberAuthRoutes');
+const memberProfileRoutes = require('./routes/memberProfileRoutes');
+const adminProfileRoutes = require('./routes/adminProfileRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 
 app.get('/', (req, res) => {
     res.json({ 
@@ -76,6 +80,10 @@ app.get('/health', (req, res) => {
 app.use('/api/register', registerRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/events', eventRoutes);
+app.use('/api/member', memberAuthRoutes);
+app.use('/api/member/profile', memberProfileRoutes);
+app.use('/api/admin/profile-change-requests', adminProfileRoutes);
+app.use('/api/payment', paymentRoutes);
 
 const errorHandler = require('./middlewares/errorHandler');
 

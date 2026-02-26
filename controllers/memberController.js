@@ -67,12 +67,6 @@ const updateMemberApprovalController = async (req, res) => {
   // Update approval
   const result = await updateMemberApproval(id, adminRole, action, remarks);
 
-  // Custom message if all approved
-  let message = result.message;
-  if (result.allApproved) {
-    message = `Member approved successfully by ${adminRole}. All approvals complete! Member status is now 'approved'.`;
-  }
-
   successResponse(
     res,
     {
@@ -81,8 +75,9 @@ const updateMemberApprovalController = async (req, res) => {
       updatedApproval: result.updatedApproval,
       allApproved: result.allApproved,
       status: result.status,
+      paymentPending: result.paymentPending,
     },
-    message
+    result.message
   );
 };
 

@@ -197,7 +197,7 @@ const userSchema = new mongoose.Schema(
     // STATUS & WORKFLOW
     status: {
       type: String,
-      enum: ['submitted', 'verified', 'payment_completed', 'rejected','pending_approval'],
+      enum: ['submitted', 'verified', 'payment_completed','approved','rejected','change_requested'],
       default: 'submitted',
     },
     rejectionReason: {
@@ -257,7 +257,17 @@ const userSchema = new mongoose.Schema(
         enum: ['pending', 'completed', 'failed'],
         default: 'pending',
       },
+      type: {
+        type: String,
+        enum: ['new', 'renewal'],
+        default: 'new',
+      },
       amount: Number,
+      baseAmount: Number,
+      gstAmount: Number,
+      razorpayOrderId: String,
+      razorpayPaymentId: String,
+      razorpaySignature: String,
       transactionId: String,
       paymentDate: Date,
       paymentMethod: String,
@@ -272,9 +282,30 @@ const userSchema = new mongoose.Schema(
       certificateNumber: String,
       issueDate: Date,
       expiryDate: Date,
+      status: {
+        type: String,
+        enum: ['active', 'expiring_soon', 'expired'],
+        default: 'active',
+      },
       url: String,
       publicId: String,
     },
+
+    // RENEWAL HISTORY
+    renewalHistory: [
+      {
+        renewalDate: Date,
+        previousExpiryDate: Date,
+        newExpiryDate: Date,
+        amount: Number,
+        razorpayPaymentId: String,
+        status: {
+          type: String,
+          enum: ['completed', 'failed'],
+          default: 'completed',
+        },
+      },
+    ],
 
     // VERIFICATION FLAGS
     isEmailVerified: {
@@ -294,6 +325,50 @@ const userSchema = new mongoose.Schema(
       },
       requestedChanges: mongoose.Schema.Types.Mixed,
       requestedAt: Date,
+      status: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'pending',
+      },
+      reviewedBy: {
+        adminId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Admin',
+        },
+        adminRole: String,
+        adminName: String,
+      },
+      reviewedAt: Date,
+      rejectionReason: String,
+      remarks: String,
+    },
+
+    // OTP for Password Reset
+    otp: {
+      type: String,
+      select: false,
+    },
+    otpExpiry: {
+      type: Date,
+      select: false,
+    },
+    otpAttempts: {
+      type: Number,
+      default: 0,
+      select: false,
+    },
+    otpMaxAttempts: {
+      type: Number,
+      default: 5,
+      select: false,
+    },
+    otpBlockedUntil: {
+      type: Date,
+      select: false,
+    },
+    lastOtpSentAt: {
+      type: Date,
+      select: false,
     },
 
     lastLogin: Date,

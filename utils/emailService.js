@@ -15,6 +15,11 @@ const createTransporter = () => {
 
 // Send email function
 const sendEmail = async (options) => {
+
+  console.log('Sending email to:', options.to);
+  console.log('Subject:', options.subject);
+  console.log('HTML:', options.html);
+
   try {
     const transporter = createTransporter();
 

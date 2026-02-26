@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const Admin = require('../models/Admin');
+const User = require('../models/User');
 const ApiError = require('../utils/ApiError');
+const { verifyToken } = require('../utils/jwtHelper');
 
 // Protect routes - verify JWT from cookie
 const authenticateAdmin = async (req, res, next) => {
@@ -54,7 +56,38 @@ const authorizeRoles = (...roles) => {
   };
 };
 
+// Authenticate Member Middleware
+const authenticateMember = async (req, res, next) => {
+  try {
+    const token = req.cookies.memberToken;
+
+    if (!token) {
+      throw new ApiError(401, 'Not authorized. Please login to access this resource');
+    }
+
+    const decoded = verifyToken(token);
+    if (!decoded) {
+      throw new ApiError(401, 'Invalid or expired token. Please login again');
+    }
+
+    const member = await User.findById(decoded.id).select('-password');
+    if (!member) {
+      throw new ApiError(401, 'Member not found. Please login again');
+    }
+
+    if (!member.isActive) {
+      throw new ApiError(403, 'Your account has been deactivated. Please contact support.');
+    }
+
+    req.member = member;
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   authenticateAdmin,
   authorizeRoles,
+  authenticateMember,
 };

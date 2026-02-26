@@ -393,8 +393,8 @@ const updateMemberApproval = async (memberId, adminRole, action, remarks) => {
         member.approvals.treasurer.approved;
 
       if (allApproved) {
-        member.status = 'approved';
-        console.log(`✅ All approvals complete for member: ${member.member.fullName}`);
+        member.status = 'verified';
+        console.log(`✅ All approvals complete for member: ${member.member.fullName}. Status changed to 'verified'. Payment pending.`);
       }
     } else {
       // Reject
@@ -411,8 +411,22 @@ const updateMemberApproval = async (memberId, adminRole, action, remarks) => {
     // Save changes
     await member.save();
 
+    // Check if all approvals are complete
+    const allApproved =
+      member.approvals.president.approved &&
+      member.approvals.secretary.approved &&
+      member.approvals.treasurer.approved;
+
+    // Create response message
+    let responseMessage = action === 'approve' ? 'Member approved successfully' : 'Member rejected successfully';
+    
+    // If all approved and status is verified, add payment pending message
+    if (allApproved && member.status === 'verified') {
+      responseMessage = 'Member approved successfully. All approvals complete! Application status: Verified. Payment pending for membership activation.';
+    }
+
     return {
-      message: action === 'approve' ? 'Member approved successfully' : 'Member rejected successfully',
+      message: responseMessage,
       memberId: member._id,
       memberName: member.member?.fullName,
       updatedApproval: {
@@ -421,11 +435,9 @@ const updateMemberApproval = async (memberId, adminRole, action, remarks) => {
         approvedAt: member.approvals[adminRole].approvedAt,
         remarks: member.approvals[adminRole].remarks,
       },
-      allApproved:
-        member.approvals.president.approved &&
-        member.approvals.secretary.approved &&
-        member.approvals.treasurer.approved,
+      allApproved,
       status: member.status,
+      paymentPending: allApproved && member.status === 'verified',
     };
   } catch (error) {
     console.error('Error updating member approval:', error);
