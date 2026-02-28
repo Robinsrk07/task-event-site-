@@ -32,13 +32,13 @@ const getPendingApprovals = async (page = 1, limit = 10) => {
       id: member._id.toString(),
       membershipNumber: member.membershipNumber || 'N/A',
       membershipType: member.membershipType,
-      
+
       // Basic Info (for list view)
       name: member.member?.fullName || 'N/A',
       company: member.establishment?.name || 'N/A',
       email: member.email || 'N/A',
       phone: member.member?.mobile || 'N/A',
-      
+
       // Complete Establishment Details
       establishment: {
         name: member.establishment?.name || null,
@@ -50,7 +50,7 @@ const getPendingApprovals = async (page = 1, limit = 10) => {
         officialEmail: member.establishment?.officialEmail || null,
         gstRegistered: member.establishment?.gstRegistered || false,
       },
-      
+
       // Complete Location Details
       location: {
         district: member.location?.district || null,
@@ -61,7 +61,7 @@ const getPendingApprovals = async (page = 1, limit = 10) => {
         communicationAddress: member.location?.communicationAddress || null,
         isSameAddress: member.location?.isSameAddress || false,
       },
-      
+
       // Complete Member Details
       member: {
         officeType: member.member?.officeType || null,
@@ -71,30 +71,30 @@ const getPendingApprovals = async (page = 1, limit = 10) => {
         mobile: member.member?.mobile || null,
         landline: member.member?.landline || null,
       },
-      
+
       // Partner Details
       partner: {
         name: member.partner?.name || null,
         mobile: member.partner?.mobile || null,
       },
-      
+
       // Staff Details
       staff: {
         name: member.staff?.name || null,
         mobile: member.staff?.mobile || null,
       },
-      
+
       // Documents
       documents: {
         agencyAddressProof: member.documents?.agencyAddressProof || null,
         shopPhoto: member.documents?.shopPhoto || null,
         businessCard: member.documents?.businessCard || null,
       },
-      
+
       // Status & Rejection
       status: member.status || 'submitted',
       rejectionReason: member.rejectionReason || null,
-      
+
       // Approvals (Complete with dates and remarks)
       approvals: {
         president: {
@@ -113,7 +113,7 @@ const getPendingApprovals = async (page = 1, limit = 10) => {
           remarks: member.approvals?.treasurer?.remarks || null,
         },
       },
-      
+
       // Payment Information
       payment: {
         status: member.payment?.status || 'pending',
@@ -122,14 +122,14 @@ const getPendingApprovals = async (page = 1, limit = 10) => {
         paymentDate: member.payment?.paymentDate || null,
         paymentMethod: member.payment?.paymentMethod || null,
       },
-      
+
       // Referral Information
       referral: {
         referredBy: member.referral?.referredBy || null,
         referralCode: member.referral?.referralCode || null,
         referredMembers: member.referral?.referredMembers || [],
       },
-      
+
       // Certificate Information
       certificate: {
         generated: member.certificate?.generated || false,
@@ -139,18 +139,18 @@ const getPendingApprovals = async (page = 1, limit = 10) => {
         url: member.certificate?.url || null,
         publicId: member.certificate?.publicId || null,
       },
-      
+
       // Verification Flags
       isEmailVerified: member.isEmailVerified || false,
       isMobileVerified: member.isMobileVerified || false,
-      
+
       // Profile Change Request
       profileChangeRequest: {
         pending: member.profileChangeRequest?.pending || false,
         requestedChanges: member.profileChangeRequest?.requestedChanges || null,
         requestedAt: member.profileChangeRequest?.requestedAt || null,
       },
-      
+
       // Activity Info
       lastLogin: member.lastLogin || null,
       isActive: member.isActive,
@@ -211,13 +211,13 @@ const getPendingApprovalsByRole = async (role, page = 1, limit = 10) => {
       id: member._id.toString(),
       membershipNumber: member.membershipNumber || 'N/A',
       membershipType: member.membershipType,
-      
+
       // Basic Info (for list view)
       name: member.member?.fullName || 'N/A',
       company: member.establishment?.name || 'N/A',
       email: member.email || 'N/A',
       phone: member.member?.mobile || 'N/A',
-      
+
       // Complete Establishment Details
       establishment: {
         name: member.establishment?.name || null,
@@ -229,7 +229,7 @@ const getPendingApprovalsByRole = async (role, page = 1, limit = 10) => {
         officialEmail: member.establishment?.officialEmail || null,
         gstRegistered: member.establishment?.gstRegistered || false,
       },
-      
+
       // Complete Location Details
       location: {
         district: member.location?.district || null,
@@ -240,7 +240,7 @@ const getPendingApprovalsByRole = async (role, page = 1, limit = 10) => {
         communicationAddress: member.location?.communicationAddress || null,
         isSameAddress: member.location?.isSameAddress || false,
       },
-      
+
       // Complete Member Details
       member: {
         officeType: member.member?.officeType || null,
@@ -250,30 +250,30 @@ const getPendingApprovalsByRole = async (role, page = 1, limit = 10) => {
         mobile: member.member?.mobile || null,
         landline: member.member?.landline || null,
       },
-      
+
       // Partner Details
       partner: {
         name: member.partner?.name || null,
         mobile: member.partner?.mobile || null,
       },
-      
+
       // Staff Details
       staff: {
         name: member.staff?.name || null,
         mobile: member.staff?.mobile || null,
       },
-      
+
       // Documents
       documents: {
         agencyAddressProof: member.documents?.agencyAddressProof || null,
         shopPhoto: member.documents?.shopPhoto || null,
         businessCard: member.documents?.businessCard || null,
       },
-      
+
       // Status & Rejection
       status: member.status || 'submitted',
       rejectionReason: member.rejectionReason || null,
-      
+
       // Approvals (Complete with dates and remarks)
       approvals: {
         president: {
@@ -292,7 +292,7 @@ const getPendingApprovalsByRole = async (role, page = 1, limit = 10) => {
           remarks: member.approvals?.treasurer?.remarks || null,
         },
       },
-      
+
       // Payment Information
       payment: {
         status: member.payment?.status || 'pending',
@@ -301,14 +301,14 @@ const getPendingApprovalsByRole = async (role, page = 1, limit = 10) => {
         paymentDate: member.payment?.paymentDate || null,
         paymentMethod: member.payment?.paymentMethod || null,
       },
-      
+
       // Referral Information
       referral: {
         referredBy: member.referral?.referredBy || null,
         referralCode: member.referral?.referralCode || null,
         referredMembers: member.referral?.referredMembers || [],
       },
-      
+
       // Certificate Information
       certificate: {
         generated: member.certificate?.generated || false,
@@ -318,18 +318,18 @@ const getPendingApprovalsByRole = async (role, page = 1, limit = 10) => {
         url: member.certificate?.url || null,
         publicId: member.certificate?.publicId || null,
       },
-      
+
       // Verification Flags
       isEmailVerified: member.isEmailVerified || false,
       isMobileVerified: member.isMobileVerified || false,
-      
+
       // Profile Change Request
       profileChangeRequest: {
         pending: member.profileChangeRequest?.pending || false,
         requestedChanges: member.profileChangeRequest?.requestedChanges || null,
         requestedAt: member.profileChangeRequest?.requestedAt || null,
       },
-      
+
       // Activity Info
       lastLogin: member.lastLogin || null,
       isActive: member.isActive,
@@ -419,7 +419,7 @@ const updateMemberApproval = async (memberId, adminRole, action, remarks) => {
 
     // Create response message
     let responseMessage = action === 'approve' ? 'Member approved successfully' : 'Member rejected successfully';
-    
+
     // If all approved and status is verified, add payment pending message
     if (allApproved && member.status === 'verified') {
       responseMessage = 'Member approved successfully. All approvals complete! Application status: Verified. Payment pending for membership activation.';
@@ -471,9 +471,90 @@ const deleteUserProfile = async (memberId) => {
   }
 };
 
+// Get members with approved or rejected status
+const getApprovedOrRejectedMembers = async (page = 1, limit = 10) => {
+  try {
+    const skip = (page - 1) * limit;
+
+    const query = {
+      status: { $in: ['approved', 'rejected'] },
+    };
+
+    const members = await User.find(query)
+      .sort({ updatedAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .select('-password')
+      .lean();
+
+    const totalMembers = await User.countDocuments(query);
+    const totalPages = Math.ceil(totalMembers / limit);
+
+    const formattedMembers = members.map((member) => ({
+      id: member._id.toString(),
+      membershipNumber: member.membershipNumber || 'N/A',
+      name: member.member?.fullName || 'N/A',
+      company: member.establishment?.name || 'N/A',
+      email: member.email || 'N/A',
+      phone: member.member?.mobile || 'N/A',
+      status: member.status,
+      isActive: member.isActive,
+      rejectionReason: member.rejectionReason || null,
+      updatedAt: member.updatedAt,
+      registrationDate: member.createdAt,
+    }));
+
+    const pagination = {
+      currentPage: page,
+      totalPages,
+      totalMembers,
+      limit,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1,
+    };
+
+    return {
+      members: formattedMembers,
+      pagination,
+    };
+  } catch (error) {
+    console.error('Error getting processed members:', error);
+    throw new ApiError(500, 'Failed to retrieve processed members');
+  }
+};
+
+// Block or Unblock a member
+const toggleMemberBlockStatus = async (memberId, action) => {
+  try {
+    if (!['block', 'unblock'].includes(action)) {
+      throw new ApiError(400, 'Action must be "block" or "unblock"');
+    }
+
+    const member = await User.findById(memberId);
+    if (!member) {
+      throw new ApiError(404, 'Member not found');
+    }
+
+    member.isActive = action === 'unblock';
+    await member.save();
+
+    return {
+      message: `Member ${action}ed successfully`,
+      memberId: member._id,
+      memberName: member.member?.fullName || 'N/A',
+      isActive: member.isActive,
+    };
+  } catch (error) {
+    console.error(`Error trying to ${action} member:`, error);
+    throw error;
+  }
+};
+
 module.exports = {
   getPendingApprovals,
   getPendingApprovalsByRole,
   updateMemberApproval,
   deleteUserProfile,
+  getApprovedOrRejectedMembers,
+  toggleMemberBlockStatus,
 };

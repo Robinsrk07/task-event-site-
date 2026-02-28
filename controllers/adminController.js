@@ -70,10 +70,11 @@ const getProfile = async (req, res) => {
 // Get dashboard data
 const getDashboard = async (req, res) => {
   const { getDashboardData } = require('../services/dashboardService');
-  
+
   // Get pagination params from query
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
+  const status = req.query.status || 'submitted';
 
   // Validate pagination params
   if (page < 1) {
@@ -84,7 +85,7 @@ const getDashboard = async (req, res) => {
   }
 
   // Get dashboard data (req.admin from middleware)
-  const dashboardData = await getDashboardData(req.admin, page, limit);
+  const dashboardData = await getDashboardData(req.admin, page, limit, status);
 
   successResponse(
     res,

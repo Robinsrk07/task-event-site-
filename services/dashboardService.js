@@ -35,12 +35,14 @@ const getDashboardStats = async () => {
 };
 
 // Get members list with pagination
-const getMembersList = async (page = 1, limit = 10) => {
+const getMembersList = async (page = 1, limit = 10, status = 'submitted') => {
   try {
     const skip = (page - 1) * limit;
 
+    const filter = status && status !== 'all' ? { status } : {};
+
     // Get members with pagination (sorted by latest first)
-    const members = await User.find()
+    const members = await User.find(filter)
       .sort({ createdAt: -1 }) // Latest first
       .skip(skip)
       .limit(limit)
@@ -50,7 +52,7 @@ const getMembersList = async (page = 1, limit = 10) => {
       .lean();
 
     // Get total count for pagination
-    const totalMembers = await User.countDocuments();
+    const totalMembers = await User.countDocuments(filter);
     const totalPages = Math.ceil(totalMembers / limit);
 
     // Format members data
@@ -104,13 +106,13 @@ const getMembersList = async (page = 1, limit = 10) => {
 };
 
 // Get complete dashboard data
-const getDashboardData = async (admin, page = 1, limit = 10) => {
+const getDashboardData = async (admin, page = 1, limit = 10, status = 'submitted') => {
   try {
     // Get statistics
     const stats = await getDashboardStats();
 
     // Get members list
-    const { members, pagination } = await getMembersList(page, limit);
+    const { members, pagination } = await getMembersList(page, limit, status);
 
     // Format admin data
     const adminData = {

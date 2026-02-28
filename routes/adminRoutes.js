@@ -3,7 +3,7 @@ const rateLimit = require('express-rate-limit');
 const router = express.Router();
 const { register, login, logout, getProfile, getDashboard } = require('../controllers/adminController');
 const { forgotPassword, verifyOTP, resetPasswordController } = require('../controllers/forgotPasswordController');
-const { getPendingApprovalsController, getPendingApprovalsByRoleController, updateMemberApprovalController, deleteUserController } = require('../controllers/memberController');
+const { getPendingApprovalsController, getPendingApprovalsByRoleController, updateMemberApprovalController, deleteUserController, getApprovedOrRejectedMembersController, toggleMemberBlockStatusController } = require('../controllers/memberController');
 const { adminRegisterValidationRules, adminLoginValidationRules, validate } = require('../validators/adminValidator');
 const { forgotPasswordValidationRules, verifyOTPValidationRules, resetPasswordValidationRules, validate: validateForgotPassword } = require('../validators/forgotPasswordValidator');
 const { approvalValidationRules, validate: validateApproval } = require('../validators/memberValidator');
@@ -109,6 +109,12 @@ router.get('/pending-approvals/:role', authenticateAdmin, asyncHandler(getPendin
 
 // Update Member Approval - Approve or Reject member
 router.put('/members/:id/approval', authenticateAdmin, approvalValidationRules, validateApproval, asyncHandler(updateMemberApprovalController));
+
+// Get Processed Members (Approved or Rejected)
+router.get('/members/processed', authenticateAdmin, asyncHandler(getApprovedOrRejectedMembersController));
+
+// Block/Unblock a user (Change status)
+router.put('/members/:id/block', authenticateAdmin, asyncHandler(toggleMemberBlockStatusController));
 
 // Delete User Profile - Remove member entirely
 router.delete('/members/:id', authenticateAdmin, asyncHandler(deleteUserController));
