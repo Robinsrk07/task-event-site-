@@ -59,9 +59,23 @@ exports.createEventValidationRules = [
     .notEmpty().withMessage('Max capacity is required')
     .isInt({ min: 1 }).withMessage('Capacity must be at least 1'),
 
+  body('registration.isFree')
+    .optional()
+    .isBoolean().withMessage('isFree must be a boolean'),
+
   body('registration.fee')
-    .notEmpty().withMessage('Registration fee is required')
+    .if(body('registration.isFree').equals('false'))
+    .notEmpty().withMessage('Registration fee is required for paid events')
     .isFloat({ min: 0 }).withMessage('Fee cannot be negative'),
+
+  body('registration.fee')
+    .if(body('registration.isFree').equals('true'))
+    .custom((value, { req }) => {
+      if (value !== undefined && value !== 0) {
+        throw new Error('Fee must be 0 for free events');
+      }
+      return true;
+    }),
 
   body('registration.earlyBirdFee')
     .optional()

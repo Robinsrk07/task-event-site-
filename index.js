@@ -11,21 +11,21 @@ dotenv.config();
 const requiredEnvVars = ['MONGO_URI', 'JWT_SECRET', 'PORT'];
 const missing = requiredEnvVars.filter(key => !process.env[key]);
 if (missing.length > 0) {
-  console.error(`❌ Missing required environment variables: ${missing.join(', ')}`);
-  process.exit(1);
+    console.error(`❌ Missing required environment variables: ${missing.join(', ')}`);
+    process.exit(1);
 }
 
 if (process.env.JWT_SECRET === 'your_super_secret_jwt_key_change_this_in_production') {
-  console.error('❌ SECURITY WARNING: Please change JWT_SECRET in .env file to a strong random value');
-  console.error('💡 Generate one using: node -e "console.log(require(\'crypto\').randomBytes(64).toString(\'hex\'))"');
-  process.exit(1);
+    console.error('❌ SECURITY WARNING: Please change JWT_SECRET in .env file to a strong random value');
+    console.error('💡 Generate one using: node -e "console.log(require(\'crypto\').randomBytes(64).toString(\'hex\'))"');
+    process.exit(1);
 }
 
 const app = express();
 
 app.use(helmet());
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    origin: process.env.CLIENT_URL || 'http://localhost:5173',
     credentials: true,
     optionsSuccessStatus: 200
 }));
@@ -60,9 +60,10 @@ const memberAuthRoutes = require('./routes/memberAuthRoutes');
 const memberProfileRoutes = require('./routes/memberProfileRoutes');
 const adminProfileRoutes = require('./routes/adminProfileRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
+const memberEventRoutes = require('./routes/memberEventRoutes');
 
 app.get('/', (req, res) => {
-    res.json({ 
+    res.json({
         message: 'Online Membership Registration & Event Management System API',
         version: '1.0.0',
         status: 'active'
@@ -70,7 +71,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/health', (req, res) => {
-    res.status(200).json({ 
+    res.status(200).json({
         status: 'success',
         message: 'Server is running',
         timestamp: new Date().toISOString()
@@ -84,6 +85,7 @@ app.use('/api/member', memberAuthRoutes);
 app.use('/api/member/profile', memberProfileRoutes);
 app.use('/api/admin/profile-change-requests', adminProfileRoutes);
 app.use('/api/payment', paymentRoutes);
+app.use('/api/member/events', memberEventRoutes);
 
 const errorHandler = require('./middlewares/errorHandler');
 

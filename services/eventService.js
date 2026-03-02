@@ -27,19 +27,34 @@ const createEvent = async (eventData, adminId) => {
       }
     }
 
+    // Check for duplicate event (same title and start date)
+    const existingEvent = await Event.findOne({
+      title: eventData.title,
+      'eventDate.startDate': eventData.eventDate.startDate,
+      isActive: true
+    });
+
+    if (existingEvent) {
+      throw new ApiError(409, 'An event with the same title and start date already exists.');
+    }
+
+    // Handle Free Event Logic
+    const isFree = eventData.registration.isFree === true || eventData.registration.isFree === 'true';
+    const fee = isFree ? 0 : eventData.registration.fee;
+
     // Create event object
     const newEvent = new Event({
       title: eventData.title,
       description: eventData.description,
       eventType: eventData.eventType,
-      
+
       eventDate: {
         startDate: eventData.eventDate.startDate,
         endDate: eventData.eventDate.endDate,
         startTime: eventData.eventDate.startTime,
         endTime: eventData.eventDate.endTime,
       },
-      
+
       venue: {
         name: eventData.venue.name,
         address: eventData.venue.address,
@@ -48,29 +63,30 @@ const createEvent = async (eventData, adminId) => {
         pinCode: eventData.venue.pinCode || '',
         mapLink: eventData.venue.mapLink || '',
       },
-      
+
       registration: {
         isOpen: eventData.registration.isOpen !== undefined ? eventData.registration.isOpen : true,
+        isFree: isFree,
         deadline: eventData.registration.deadline,
         maxCapacity: eventData.registration.maxCapacity,
-        fee: eventData.registration.fee,
-        earlyBirdFee: eventData.registration.earlyBirdFee || null,
+        fee: fee,
+        earlyBirdFee: isFree ? 0 : (eventData.registration.earlyBirdFee || null),
         earlyBirdDeadline: eventData.registration.earlyBirdDeadline || null,
       },
-      
+
       organizer: {
         createdBy: adminId,
         contactPerson: eventData.organizer.contactPerson,
         contactEmail: eventData.organizer.contactEmail,
         contactPhone: eventData.organizer.contactPhone,
       },
-      
+
       status: eventData.status || 'draft',
     });
 
     // Save event
     const savedEvent = await newEvent.save();
-    
+
     console.log(`✅ Event created: ${savedEvent.title} by Admin ${adminId}`);
 
     return savedEvent;
@@ -86,11 +102,11 @@ const getAllEvents = async (filters = {}) => {
     const { status, eventType, page = 1, limit = 10 } = filters;
 
     const query = { isActive: true };
-    
+
     if (status) {
       query.status = status;
     }
-    
+
     if (eventType) {
       query.eventType = eventType;
     }
@@ -179,8 +195,21 @@ const updateEvent = async (eventId, updateData) => {
       if (updateData.registration.isOpen !== undefined) event.registration.isOpen = updateData.registration.isOpen;
       if (updateData.registration.deadline) event.registration.deadline = updateData.registration.deadline;
       if (updateData.registration.maxCapacity) event.registration.maxCapacity = updateData.registration.maxCapacity;
-      if (updateData.registration.fee !== undefined) event.registration.fee = updateData.registration.fee;
-      if (updateData.registration.earlyBirdFee !== undefined) event.registration.earlyBirdFee = updateData.registration.earlyBirdFee;
+
+      if (updateData.registration.isFree !== undefined) {
+        event.registration.isFree = updateData.registration.isFree === true || updateData.registration.isFree === 'true';
+      }
+
+      const currentIsFree = event.registration.isFree;
+
+      if (currentIsFree) {
+        event.registration.fee = 0;
+        event.registration.earlyBirdFee = 0;
+      } else {
+        if (updateData.registration.fee !== undefined) event.registration.fee = updateData.registration.fee;
+        if (updateData.registration.earlyBirdFee !== undefined) event.registration.earlyBirdFee = updateData.registration.earlyBirdFee;
+      }
+
       if (updateData.registration.earlyBirdDeadline !== undefined) event.registration.earlyBirdDeadline = updateData.registration.earlyBirdDeadline;
     }
 
@@ -209,7 +238,7 @@ const updateEvent = async (eventId, updateData) => {
 
     // Save updated event
     const updatedEvent = await event.save();
-    
+
     console.log(`✅ Event updated: ${updatedEvent.title} (ID: ${updatedEvent._id})`);
 
     return updatedEvent;

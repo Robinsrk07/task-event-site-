@@ -94,9 +94,13 @@ const eventSchema = new mongoose.Schema(
         default: 0,
         min: 0,
       },
+      isFree: {
+        type: Boolean,
+        default: false,
+      },
       fee: {
         type: Number,
-        required: [true, 'Registration fee is required'],
+        required: function () { return !this.registration.isFree; },
         min: [0, 'Fee cannot be negative'],
       },
       earlyBirdFee: {
